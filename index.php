@@ -52,17 +52,28 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <title>HOTELS PHP</title>
 </head>
-<body>
+<body class="bg-secondary-subtle">
 <?php echo '<pre>';  print_r($hotels); echo '</pre>' ?>
 
-<form action="index.php" method="post">
-    <input class="form-control" 
-    type="text" 
-    name="parola"
-    aria-label=""
-    placeholder="search...">
-    <br>
-    <button class="btn btn-primary" type="submit">invia</button>
+<form action="index.php" method="get">
+    <div class="mb-3">
+        <label for="parkingFilter" class="form-label">Filtro per Parcheggio:</label>
+        <select class="form-select" id="parkingFilter" name="parking">
+            <option value="">Tutti</option>
+            <option value="1">Con parcheggio</option>
+            <option value="0">Senza parcheggio</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="voteFilter" class="form-label">Filtro per Voto:</label>
+        <select class="form-select" id="voteFilter" name="vote">
+            <option value="">Tutti</option>
+            <?php for ($i = 1; $i <= 5; $i++): ?>
+                <option value="<?php echo $i; ?>"><?php echo $i; ?> stelle o più</option>
+            <?php endfor; ?>
+        </select>
+    </div>
+    <button class="btn btn-primary" type="submit">Vai</button>
 </form>
 
 <hr>
@@ -80,8 +91,10 @@
 </thead>
 <tbody>
 <?php foreach ($hotels as $index => $hotel): ?>
-  
-
+    <?php 
+        if(isset($_GET['parking']) && ($_GET['parking'] !== '') && ($hotel['parking'] != $_GET['parking'])) continue; 
+        if(isset($_GET['vote']) && ($_GET['vote'] !== '') && ($hotel['vote'] < $_GET['vote'])) continue;
+    ?>
   <tr class="table-warning">
     <th class="table-info" scope="row"><?php echo ($index + 1); ?></th>
     <td><? echo $hotel['name']; ?></td>
